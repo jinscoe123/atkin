@@ -1,0 +1,17 @@
+# Build artifacts
+*.[oa]
+*.so
+
+
+# Temporary files
+*.sw[nop]
+*~
+
+
+# Python bytecode files
+__pycache__/
+*.py[cdo]
+
+
+# Pytest cache
+.pytest_cache/
