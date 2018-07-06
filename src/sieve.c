@@ -10,6 +10,8 @@
 #include "sieve.h"
 
 
+#include <errno.h>
+#include <limits.h>
 #include <stdint.h>
 #include <stdlib.h>
 
@@ -17,6 +19,14 @@
 
 int sieve_init(sieve_t* s, uint64_t limit)
 {
+#if SIZE_MAX < UINT64_MAX
+    if ((limit >> 3) + 1 > SIZE_MAX)
+    {
+        errno = EOVERFLOW;
+        return -1;
+    }
+#endif
+
     size_t size = (limit >> 3) + 1;
 
     unsigned char* sieve = (unsigned char*)calloc(1, size);
