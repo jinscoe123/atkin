@@ -29,6 +29,17 @@ $(EXE): $(HDRS) $(OBJS) Makefile
 $(OBJS): $(HDRS) $(SRCS) Makefile
 
 
+.PHONY += test
+
+test: all requirements.txt
+	virtualenv -p python3 .venv \
+		&& . .venv/bin/activate \
+		&& pip install -r requirements.txt \
+		&& pytest test \
+		&& deactivate \
+		&& $(RM) -r .venv
+
+
 .PHONY += clean
 
 clean:
