@@ -21,18 +21,21 @@ void atkin_make(sieve_t* s)
 {
     register uint64_t x = 1;
     register uint64_t y = 1;
+    register uint64_t xx_mul1 = 1 * x * x;
     register uint64_t xx_mul3 = 3 * x * x;
     register uint64_t xx_mul4 = 4 * x * x;
     register uint64_t yy_mul1 = 1 * y * y;
+
+    register uint64_t limit = SIEVE_LIMIT(*s);
 
     register uint64_t n = 0;
 
     register uint64_t i = 5;
     register uint64_t ii_mul1 = 1 * i * i;
 
-    while (x * x < SIEVE_LIMIT(*s))
+    while (yy_mul1 < limit)
     {
-        while (yy_mul1 < SIEVE_LIMIT(*s))
+        while (xx_mul1 < limit)
         {
             if (x <= y)
             {
@@ -40,7 +43,7 @@ void atkin_make(sieve_t* s)
             }
 
             n = xx_mul3 - yy_mul1;
-            if (n < SIEVE_LIMIT(*s))
+            if (n < limit)
             {
                 switch (n % 12)
                 {
@@ -50,12 +53,12 @@ void atkin_make(sieve_t* s)
             }
             else
             {
-                goto _next;
+                break;
             }
 
 _skip:
             n = xx_mul3 + yy_mul1;
-            if (n < SIEVE_LIMIT(*s))
+            if (n < limit)
             {
                 switch (n % 12)
                 {
@@ -69,7 +72,7 @@ _skip:
             }
 
             n = xx_mul4 + yy_mul1;
-            if (n < SIEVE_LIMIT(*s))
+            if (n < limit)
             {
                 switch (n % 12)
                 {
@@ -84,25 +87,28 @@ _skip:
             }
 
 _next:
-            ++y;
-            yy_mul1 = y * y;
+            ++x;
+            xx_mul1 = 1 * x * x;
+            xx_mul3 = 3 * x * x;
+            xx_mul4 = 4 * x * x;
         }
 
-        y = 1;
-        yy_mul1 = 1 * y * y;
-
-        ++x;
+        x = 1;
+        xx_mul1 = 1 * x * x;
         xx_mul3 = 3 * x * x;
         xx_mul4 = 4 * x * x;
+
+        ++y;
+        yy_mul1 = 1 * y * y;
     }
 
-    while (ii_mul1 < SIEVE_LIMIT(*s))
+    while (ii_mul1 < limit)
     {
         if (SIEVE_GETBIT(*s, i))
         {
             n = ii_mul1;
 
-            for ( ; n < SIEVE_LIMIT(*s); n += ii_mul1)
+            for ( ; n < limit; n += ii_mul1)
             {
                 SIEVE_CLRBIT(*s, n);
             }
